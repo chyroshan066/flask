@@ -351,3 +351,92 @@ def index():
      mail.send(msg)
      return "Message Sent"
 ```
+
+## Flask -WTForms
+
+To use "flask WTForms", you need to install it using the following command;
+
+```js
+pip install flask-WTF
+```
+
+After installing it, create separate file (eg: form.py) and import "FlaskForm" from "flask-wtf" and the required input fields and "validator" from "wtforms" as;
+
+```js
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField, IntegerField, RadioField, SelectField, validators, SubmitField
+```
+
+Then create a form class (eg: ContactForm) which extends "FlaskForm" and write the required fields you want and also the validation;
+
+```js
+class ContactForm(FlaskForm):
+    name = StringField("Name of Student", [validators.DataRequired("Please enter your name.")])
+    gender = RadioField("Gender", choices=[('M', 'Male'), ('F', 'Female')])
+    address = TextAreaField('Address')
+    email = StringField("Email", [validators.DataRequired("Please enter your email address."), validators.Email("Please enter your email address.")])
+    age = IntegerField("Age")
+    language = SelectField("Languages", choices=[('cpp', 'C++'), ('py', 'Python')])
+    submit = SubmitField("Send")
+```
+
+Then in your main app import the "ContactForm" class from "form" module
+
+```js
+from forms import ContactForm
+```
+
+Make sure to write a secret key
+
+```js
+app.secret_key = "development key";
+```
+
+Then create the "ContactForm" object and validate it as;
+
+```js
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    form  = ContactForm()
+
+    if request.method == 'POST':
+        if form.validate() == False:
+            flash("All fields are required.")
+            return render_template("contact.html", form=form)
+        else:
+            return render_template("success.html")
+    else:
+        return render_template("contact.html", form=form)
+```
+
+Now in your template flash the error messages as;
+
+```js
+{% for message in form.name.errors %}
+    <div>{{ message }}</div>
+{% endfor %}
+
+{% for message in form.email.errors %}
+    <div>{{ message }}</div>
+{% endfor %}
+```
+
+Use those field names and labels inside the form dynamically as;
+
+```js
+<form action="/contact" method="post">
+  <fieldset>
+    <legend>Contact Form</legend>
+    {{ form.hidden_tag() }}
+
+    <div style="font-size: 20px; font-weight: bold; margin-left: 150px">
+      {{ form.name.label }}<br />
+      {{ form.name }}
+      <br />
+      {{ form.gender.label }} {{ form.gender }}
+      <br />
+      {{ form.address.label }}<br />
+      {{ form.address }}
+    </div>
+  </fieldset>
+```

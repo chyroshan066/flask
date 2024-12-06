@@ -1,0 +1,46 @@
+{% extends 'base.html' %} {% block body %}
+
+<h2 style="text-align: center">Contact Form</h2>
+
+{% with messages = get_flashed_messages() %} {% if messages %} {% for msg in
+messages %}
+<div>{{ msg }}</div>
+{% endfor %} {% endif %} {% endwith %} {% for message in form.name.errors %}
+<!-- flash error messages when encountered error in "name" field -->
+<div>{{ message }}</div>
+{% endfor %} {% for message in form.email.errors %}
+<!-- flash error messages when encountered error in "email" field -->
+<div>{{ message }}</div>
+{% endfor %}
+
+<form action="/contact" method="post">
+  <fieldset>
+    <legend>Contact Form</legend>
+    <!-- provides caption to the form -->
+    {{ form.hidden_tag() }}
+    <!-- generates hidden input field -->
+
+    <div style="font-size: 20px; font-weight: bold; margin-left: 150px">
+      {{ form.name.label }}<br />
+      {{ form.name }}
+      <br />
+      {{ form.gender.label }} {{ form.gender }}
+      <br />
+      {{ form.address.label }}<br />
+      {{ form.address }}
+      <br />
+      {{ form.email.label }}<br />
+      {{ form.email }}
+      <br />
+      {{ form.age.label }}<br />
+      {{ form.age }}
+      <br />
+      {{ form.language.label }}<br />
+      {{ form.language }}
+      <br />
+      {{ form.submit }}
+    </div>
+  </fieldset>
+</form>
+
+{% endblock %}
